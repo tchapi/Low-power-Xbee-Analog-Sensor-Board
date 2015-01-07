@@ -1,13 +1,12 @@
 /*============================================================
-  Name : XBeeTempSensor
-  Author : exsertus.com (Steve Bowerman)
- 
-  Summary
-  Generic Xbee sensor program.
+  Name : XBeeSleepAnalogBoard
+  Based on the work of : exsertus.com (Steve Bowerman)
+  Modifications : tchapi
   
-  Version : 2.0
-
-  Credits
+  Summary
+  (Generic) Xbee sensor program.
+  
+  Version : 3.0
   
 ============================================================*/
 
