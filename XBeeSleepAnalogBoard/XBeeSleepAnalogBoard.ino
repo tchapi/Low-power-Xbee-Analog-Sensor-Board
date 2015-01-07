@@ -170,16 +170,6 @@ void setup() {
   XBee.print(init_msg);
   XBee.print("\r");
   delay(750);
-  
-  // Acknowledge by blinking ACTV led
-  //  digitalWrite(SENSPWR, HIGH);
-  //  delay(100);
-  //  digitalWrite(SENSPWR, LOW);
-  //  delay(50);
-  //  digitalWrite(SENSPWR, HIGH);
-  //  delay(100);
-  //  digitalWrite(SENSPWR, LOW);
-  // -----------
      
   digitalWrite(SLEEP,HIGH);
 }
@@ -276,16 +266,6 @@ void loop() {
      
      // Put XBee back to sleep, wait first to allow all remaining data to be sent
      delay(750);
-     
-     // Acknowledge by blinking ACTV led
-//     digitalWrite(SENSPWR, HIGH);
-//     delay(100);
-//     digitalWrite(SENSPWR, LOW);
-//     delay(50);
-//     digitalWrite(SENSPWR, HIGH);
-//     delay(100);
-//     digitalWrite(SENSPWR, LOW);
-     // -----------
    
      digitalWrite(SLEEP,HIGH);
   
