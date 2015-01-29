@@ -1,0 +1,9 @@
+{
+  "xbee": {
+    "port": "/dev/ttyAMA0",
+    "api_mode": 2
+  },
+  "db": {
+    "path": "./db/db.sql"
+  }
+}

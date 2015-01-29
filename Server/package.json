@@ -1,0 +1,20 @@
+{
+  "name": "Low-PowerSensorNetworkServer",
+  "version": "1.0.0",
+  "description": "Low Power Sensor Network Server",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "tchap",
+  "license": "ISC",
+  "dependencies": {
+    "colors": "^1.0.3",
+    "consolidate": "^0.10.0",
+    "express": "^4.11.0",
+    "nunjucks": "^1.1.0",
+    "serialport": "^1.4.10",
+    "sqlite3": "^3.0.4",
+    "xbee-api": "^0.3.10"
+  }
+}
