@@ -19,7 +19,9 @@ ConfigParser = function(options) {
 
 }
 
-ConfigParser.prototype.get = function(key) {
+var p = ConfigParser.prototype
+
+p.get = function(key) {
   // error catching ?
   return this.config[key]
 }

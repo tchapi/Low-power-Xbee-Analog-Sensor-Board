@@ -1,8 +1,177 @@
 <!DOCTYPE html>
 <head>
-  <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+  <title>{{ title }}</title>
+    <meta charset="utf-8">
+    <style type="text/css">
+
+    html, body, svg {
+      font-family: "Helvetica Neue", Helvetica;
+    }
+
+    path {
+        stroke-width: 2;
+        fill: none;
+    }
+
+    .axis path, .axis line {
+        fill: none;
+        stroke: #ccc;
+        stroke-width: 1;
+        shape-rendering: crispEdges;
+    }
+
+    text {
+        fill: #aaa;
+    }
+
+    rect {
+        fill:  white;
+    }
+
+    .sensor_type {
+      margin-bottom: 10px;
+      padding-left: 20px;
+      border-left: 4px solid #666;
+    }
+
+    </style>
+</body>
 </head>
 <body>
-  C'est la page {{ title }}
+  <script src="http://d3js.org/d3.v3.min.js"></script>
+  
+  <h1>Sensors</h1>
+  
+  <p>This page lists all known sensors by type, graphing the related data if any. An active sensor is a sensor that has sent data during the last time window <em>(currently : {{ time_window }} seconds)</em></p>
+
+  <div class="sensor_type">
+  {% for key, object in sensors %}
+    <h3>Data for sensors of type : {{ key }} </h3>
+    <p>Known sensors :</p>
+    <ul>  
+      {% for sensor in object %}
+        <li>Sensor {{ sensor.id }} {% if sensor.active %}(active){% endif %}</li>
+      {% endfor %}
+    </ul>
+    <p>Last data received :</p>
+    <div id="graph_{{ key }}"></div>
+  {% endfor %}
+  </div>
+  
+
+<script>
+
+// Not linked to data
+var margin = {top: 10, right: 20, bottom: 30, left: 50},
+    width = 600 - margin.left - margin.right,
+    height = 300 - margin.top - margin.bottom,
+    y_extent_ratio = 1.1
+
+var x = d3.time.scale().range([0, width])
+var y = d3.scale.linear().range([height, 0])
+
+var valueline = d3.svg.line()
+    .x(function (d) { return x(d.timestamp); })
+    .y(function (d) { return y(d.value); })
+
+/* ***********************
+          Axis
+************************** */
+var xAxis = d3.svg.axis().scale(x)
+    .orient("bottom")
+    .ticks(d3.time.minutes, 10)
+    .tickFormat(d3.time.format('%b %d %H:%M'))
+    .tickSize(1)
+    .tickPadding(8)
+
+var yAxis = d3.svg.axis().scale(y)
+    .orient("left").ticks(5)
+
+/* ***********************
+       Data display
+************************** */
+
+var types = ["T"]
+var sensors =  {{ data }}
+
+var svg = []
+
+for (index in types) {
+
+  var type = types[index]
+  console.log("Processing data for type " + type)
+
+  // ---------
+  // GENERAL CHART
+  // ---------
+
+  svg[type] = d3.select("#graph_" + type).append("svg")
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom)
+      .append("g")
+      .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+
+  svg[type].append("rect")
+      .attr("width", width)
+      .attr("height", height)
+      .attr("class", "plot")
+
+  chartBody = svg[type].append("g")
+      .attr("clip-path", "url(#clip)")
+
+  // ---------
+  // DATA
+  // ---------
+  var data = sensors[type]
+  var color = d3.scale.category10()
+
+  // Compute extents for displaying the chart
+  extent_timestamp = []
+  extent_value = []
+  for (var i = data.length - 1; i >= 0; i--) {
+    sensor = data[i]
+    extent_timestamp.push(d3.extent(sensor.values, function (d) { return d.timestamp }))
+    extent_value.push(d3.extent(sensor.values, function (d) { return d.value }))
+  }
+  x.domain([ d3.min(extent_timestamp, function (d) { return d[0] }), d3.max(extent_timestamp, function (d) { return d[1] })])
+  y.domain([ d3.min(extent_value, function (d) { return d[0] })/y_extent_ratio, d3.max(extent_value, function (d) { return d[1] })*y_extent_ratio])
+
+  // Add the sensors lines
+  for (var i = data.length - 1; i >= 0; i--) {
+    chartBody.append("path")
+        .datum(data[i].values)
+        .attr("class", "line")
+        .attr("d", valueline)
+        .style("stroke", color(i))
+  }
+
+  // ---------
+  // AXIS / LABELS
+  // ---------
+
+  // Add the X axis
+  svg[type].append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis)
+
+  // Add the Y Axis
+  svg[type].append("g")
+      .attr("class", "y axis")
+      .call(yAxis)
+
+  // Value label (Y axis)
+  svg[type].append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 0 - margin.left)
+      .attr("x", (0 - (height / 2)))
+      .attr("dy", "1em")
+      .style("text-anchor", "middle")
+      .text("Value")
+
+}
+
+</script>
+
 </body>
 </html>
